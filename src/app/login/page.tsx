@@ -1,7 +1,22 @@
+"use client";
 /* eslint-disable react/no-unescaped-entities */
 import React from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 
-const page = () => {
+type Inputs = {
+  email: string;
+  password: string;
+};
+const Page = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+
+  console.log(watch("email")); // watch input value by passing the name of it
   return (
     <div className="flex justify-center items-center relative h-screen bg-gray-900">
       {/* Background Line */}
@@ -38,51 +53,61 @@ const page = () => {
           Business planning, designed for humans.
         </p>
 
-        {/* Social Login Buttons */}
-        <button className="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg flex items-center justify-between mb-4">
-          <span>Continue with Google</span>
-          <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
-            alt="Google"
-            className="w-6 h-6"
-          />
-        </button>
+        {/* Login Form */}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full flex flex-col"
+        >
+          <div className="mb-4">
+            <label htmlFor="email" className="text-gray-400 text-sm">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              defaultValue="user@gmail.com"
+              {...register("email")}
+              className="w-full bg-gray-700 text-white py-2 px-4 mt-1 rounded-lg border border-gray-600 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 outline-none"
+            />
+            {errors.email && <span>This field is required</span>}
+          </div>
 
-        <button className="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg flex items-center justify-between mb-4">
-          <span>Continue with Microsoft</span>
-          <img
-            src="https://www.svgrepo.com/show/475638/microsoft-color.svg"
-            alt="Microsoft"
-            className="w-6 h-6"
-          />
-        </button>
+          {/* Password Field */}
+          <div className="mb-4">
+            <label htmlFor="password" className="text-gray-400 text-sm">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              defaultValue="123456"
+              {...register("password")}
+              className="w-full bg-gray-700 text-white py-2 px-4 mt-1 rounded-lg border border-gray-600 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 outline-none"
+            />
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.password && <span>This field is required</span>}
+              </p>
+            )}
+          </div>
 
-        <button className="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg flex items-center justify-between mb-4">
-          <span>Continue with Rippling</span>
-          <img
-            src="https://www.svgrepo.com/show/354340/rippling.svg"
-            alt="Rippling"
-            className="w-6 h-6"
-          />
-        </button>
-
-        <button className="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg flex items-center justify-between mb-4">
-          <span>Continue with Xero</span>
-          <img
-            src="https://www.svgrepo.com/show/354788/xero.svg"
-            alt="Xero"
-            className="w-6 h-6"
-          />
-        </button>
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg mt-4"
+          >
+            Log In
+          </button>
+        </form>
 
         {/* Disclaimer */}
         <p className="text-gray-500 text-xs text-center mt-6">
-          By clicking "Continue" above, you acknowledge that you have read,
-          understood, and agree to Runway's Terms of Service & Privacy Policy.
+          By clicking "Log In", you acknowledge that you have read, understood,
+          and agree to Runway's Terms of Service & Privacy Policy.
         </p>
       </div>
     </div>
   );
 };
 
-export default page;
+export default Page;
