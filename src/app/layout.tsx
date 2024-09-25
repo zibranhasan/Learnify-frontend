@@ -1,16 +1,10 @@
 "use client";
 import React from "react";
-import { Layout, Menu } from "antd";
-import {
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { Layout } from "antd";
+import { usePathname } from "next/navigation"; // Import usePathname
 import localFont from "next/font/local";
 import "./globals.css"; // Ensure your global styles are imported correctly
-import Sider from "antd/es/layout/Sider";
 
-// const { Header, Content, Footer, Sider } = Layout;
 const { Header, Content, Footer } = Layout;
 
 // Define your custom fonts
@@ -25,25 +19,13 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-const items = [
-  {
-    key: "1",
-    icon: <UserOutlined />,
-    label: "nav 1",
-  },
-  {
-    key: "2",
-    icon: <VideoCameraOutlined />,
-    label: "nav 2",
-  },
-  {
-    key: "3",
-    icon: <UploadOutlined />,
-    label: "nav 3",
-  },
-];
-
 function RootLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname(); // Get the current path
+
+  console.log(pathname);
+  // Condition to hide footer for login and register pages
+  const hideFooter = pathname === "/login" || pathname === "/register";
+
   return (
     <html lang="en">
       <head></head>
@@ -52,7 +34,6 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       >
         <Header className="bg-gray-900 text-white px-4 py-2 flex justify-between items-center">
           <div className="text-lg font-semibold">My Website</div>
-          {/* <div className="text-lg font-semibold ml-2">My Website</div> */}
           <nav className="flex gap-4">
             <a href="/about" className="hover:text-blue-400">
               About Us
@@ -72,41 +53,22 @@ function RootLayout({ children }: { children: React.ReactNode }) {
           </nav>
         </Header>
         <Layout>
-          <Sider
-            breakpoint="lg"
-            collapsedWidth="0"
-            onBreakpoint={(broken) => {
-              console.log(broken);
-            }}
-            onCollapse={(collapsed, type) => {
-              console.log(collapsed, type);
-            }}
-          >
-            <div className="demo-logo-vertical" />
-            <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
-              {items.map((item) => (
-                <Menu.Item key={item.key} icon={item.icon}>
-                  {item.label}
-                </Menu.Item>
-              ))}
-            </Menu>
-          </Sider>
           <Layout>
-            <Content style={{ margin: "24px 16px 0" }}>
-              <div
+            <Content>
+              <div>{children}</div>
+            </Content>
+            {/* Conditionally render the footer */}
+            {!hideFooter && (
+              <Footer
                 style={{
-                  padding: 24,
-                  minHeight: 360,
-                  background: "var(--color-bg-content)",
-                  borderRadius: "var(--border-radius-lg)",
+                  textAlign: "center",
+                  backgroundColor: "#1a1a1a",
+                  color: "white",
                 }}
               >
-                {children}
-              </div>
-            </Content>
-            <Footer style={{ textAlign: "center" }}>
-              Ant Design ©{new Date().getFullYear()} Created by Ant UED
-            </Footer>
+                Ant Design ©{new Date().getFullYear()} Created by Ant UED
+              </Footer>
+            )}
           </Layout>
         </Layout>
       </body>
