@@ -64,6 +64,10 @@ function RootLayout({ children }: { children: React.ReactNode }) {
                   textAlign: "center",
                   backgroundColor: "#1a1a1a",
                   color: "white",
+                  height: "70px", // Set the height you prefer
+                  display: "flex", // Flexbox to align content
+                  alignItems: "center", // Center the content vertically
+                  justifyContent: "center", // Center the content horizontally
                 }}
               >
                 Ant Design ©{new Date().getFullYear()} Created by Ant UED

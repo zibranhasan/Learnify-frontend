@@ -1,22 +1,39 @@
 "use client";
+import { loginUser } from "@/services/actions/register";
+import { useRouter } from "next/navigation";
 /* eslint-disable react/no-unescaped-entities */
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 type Inputs = {
-  email: string;
+  username: string;
   password: string;
 };
 const Page = () => {
   const {
     register,
     handleSubmit,
-    watch,
+
     formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const router = useRouter();
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      const res = await loginUser(data);
+      console.log(res);
+      if (res?.data?.user._id) {
+        toast.success(res.message);
+        router.push("/");
+      } else {
+        toast.error("Login failed!");
+      }
+    } catch (err) {
+      console.error(err.message);
+      toast.error("Something went wrong!");
+    }
+  };
 
-  console.log(watch("email")); // watch input value by passing the name of it
   return (
     <div className="flex justify-center items-center relative h-screen bg-gray-900">
       {/* Background Line */}
@@ -59,17 +76,17 @@ const Page = () => {
           className="w-full flex flex-col"
         >
           <div className="mb-4">
-            <label htmlFor="email" className="text-gray-400 text-sm">
-              Email
+            <label htmlFor="userName" className="text-gray-400 text-sm">
+              Username
             </label>
             <input
-              id="email"
-              type="email"
-              defaultValue="user@gmail.com"
-              {...register("email")}
+              id="userName"
+              type="text"
+              defaultValue="user1"
+              {...register("username")}
               className="w-full bg-gray-700 text-white py-2 px-4 mt-1 rounded-lg border border-gray-600 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 outline-none"
             />
-            {errors.email && <span>This field is required</span>}
+            {errors.username && <span>This field is required</span>}
           </div>
 
           {/* Password Field */}
@@ -80,7 +97,7 @@ const Page = () => {
             <input
               id="password"
               type="password"
-              defaultValue="123456"
+              defaultValue="Password1"
               {...register("password")}
               className="w-full bg-gray-700 text-white py-2 px-4 mt-1 rounded-lg border border-gray-600 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 outline-none"
             />

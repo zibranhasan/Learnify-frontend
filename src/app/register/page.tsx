@@ -1,6 +1,18 @@
 "use client";
+
+import { registerUser } from "@/services/actions/register";
+
+import { useRouter } from "next/navigation";
+
 import React from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+type TformData = {
+  username: string;
+  email: string;
+  password: string;
+};
 
 const SignUpForm = () => {
   const {
@@ -8,10 +20,22 @@ const SignUpForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const router = useRouter();
 
-  const onSubmit = (data) => {
-    console.log(data);
-    // Handle signup logic here (e.g., API call)
+  const onSubmit = async (data: TformData) => {
+    try {
+      const res = await registerUser(data);
+      console.log(res);
+      if (res?.data?._id) {
+        toast.success(res.message);
+        router.push("/login");
+      } else {
+        toast.error("Registration failed!");
+      }
+    } catch (err) {
+      console.error(err.message);
+      toast.error("Something went wrong!");
+    }
   };
 
   return (
