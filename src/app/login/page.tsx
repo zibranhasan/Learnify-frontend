@@ -5,12 +5,15 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux"; // Import useDispatch
+import { setUser } from "@/redux/features/authSlice"; // Import setUser action
 
 type Inputs = {
   username: string;
   password: string;
 };
 const Page = () => {
+  const dispatch = useDispatch(); // Initialize dispatch
   const {
     register,
     handleSubmit,
@@ -21,9 +24,16 @@ const Page = () => {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
       const res = await loginUser(data);
-      console.log(res);
-      if (res?.data?.user._id) {
+
+      // If login is successful and response contains user and token
+      if (res?.data?.user._id && res?.data?.token) {
+        // Dispatch the setUser action to update Redux store
+        dispatch(setUser({ user: res.data.user, token: res.data.token }));
+
+        // Display success message
         toast.success(res.message);
+
+        // Redirect to home page
         router.push("/");
       } else {
         toast.error("Login failed!");
