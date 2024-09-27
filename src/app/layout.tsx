@@ -13,7 +13,7 @@ const { Header, Content, Footer } = Layout;
 // Define types/interfaces if not already defined
 type TUserPath = {
   name: string;
-  path: string;
+  path?: string;
   children?: TUserPath[];
 };
 
@@ -26,17 +26,53 @@ type TSidebarItem = {
 // Define roles
 const userRole = {
   ADMIN: "admin",
-  FACULTY: "faculty",
-  STUDENT: "student",
+  USER: "user",
 };
 
 // Example paths for admin
 const adminPaths: TUserPath[] = [
   {
-    name: "All-User",
-    path: "userManagement/allUser",
+    name: "Manage-Category",
+    path: "categoryManagement",
   },
-  // Add more paths as needed
+  {
+    name: "Manage-Courses",
+    path: "courseManagement",
+  },
+  {
+    name: "Manage-User",
+    children: [
+      {
+        name: "All-Review",
+        path: "userManagement/allReview",
+      },
+      {
+        name: "All-User",
+        path: "userManagement/allUser",
+      },
+    ],
+  },
+];
+const userPaths: TUserPath[] = [
+  {
+    name: "My-Courses",
+    path: "myCourses",
+  },
+
+  {
+    name: "Profile",
+
+    children: [
+      {
+        name: "My-Profile",
+        path: "myProfile",
+      },
+      {
+        name: "Edit-Profile",
+        path: "myProfile/editProfile",
+      },
+    ],
+  },
 ];
 
 // Function to generate sidebar items
@@ -70,12 +106,15 @@ export default function RootLayout({
 }) {
   const pathname = usePathname(); // Get the current pathname using Next.js hook
   const hideFooter = pathname === "/login" || pathname === "/register"; // Conditionally hide footer based on route
-  const role = "admin"; // Dynamically set role (for now, using "admin" as an example)
+  const role = "user"; // Dynamically set role (for now, using "admin" as an example)
 
   // Generate sidebar items based on the role
   let sidebarItems: TSidebarItem[] = [];
   if (role === userRole.ADMIN) {
     sidebarItems = sidebarItemsGenerator(adminPaths, userRole.ADMIN);
+  }
+  if (role === userRole.USER) {
+    sidebarItems = sidebarItemsGenerator(userPaths, userRole.USER);
   }
 
   return (
